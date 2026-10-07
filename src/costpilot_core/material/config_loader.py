@@ -1,18 +1,25 @@
+import os
 from pathlib import Path
 from typing import Any
 
 import yaml
+from dotenv import load_dotenv
 
 from costpilot_core.models.material.attribute_definition import AttributeDefinition
 from costpilot_core.models.material.keyword import MaterialKeyword
 from costpilot_core.models.material.keyword_level import KeywordLevel
 from costpilot_core.models.material.material_template import MaterialTemplate
 
+CORE_ROOT = Path(__file__).resolve().parents[3]
+
+load_dotenv(CORE_ROOT / ".env")
+
 
 class MaterialConfigLoader:
-    def __init__(self, registry_path: Path) -> None:
-        self._registry_path = registry_path
-        self._config_root = registry_path.parent.parent
+    def __init__(self) -> None:
+        config_path = Path(os.environ["MATERIALS_CONFIG_PATH"])
+        self._registry_path = config_path
+        self._config_root = config_path.parent.parent
 
     def load_all(self) -> dict[str, MaterialTemplate]:
         registry_data = self._load_yaml(self._registry_path)

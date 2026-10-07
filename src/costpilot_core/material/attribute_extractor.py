@@ -144,6 +144,30 @@ class AttributeExtractor:
         return extracted_groups
 
     @staticmethod
-    def _contains_value(text: str, value: str) -> bool:
+    def _contains_value(
+        text: str,
+        value: str,
+    ) -> bool:
+        if re.fullmatch(
+            r"C\d+/\d+",
+            value,
+            re.IGNORECASE,
+        ):
+            normalized_text = re.sub(
+                r"\s+",
+                "",
+                text,
+            )
+
+            return value.lower() in normalized_text.lower()
+
         pattern = rf"(?<!\w){re.escape(value)}(?!\w)"
-        return re.search(pattern, text, re.IGNORECASE) is not None
+
+        return (
+            re.search(
+                pattern,
+                text,
+                re.IGNORECASE,
+            )
+            is not None
+        )
