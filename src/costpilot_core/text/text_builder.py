@@ -1,5 +1,5 @@
 from costpilot_core.models.commodity.commodity import Commodity
-from costpilot_core.models.tender.tender_item import TenderItem
+from costpilot_core.models.tender.tender import TenderItem
 
 
 class TextBuilder:
