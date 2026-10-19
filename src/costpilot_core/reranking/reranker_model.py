@@ -1,9 +1,32 @@
-from dataclasses import dataclass
+from abc import ABC, abstractmethod
+from collections.abc import Sequence
 
-from sentence_transformers import CrossEncoder
 
+class RerankerModel(ABC):
+    """Interface for scoring query-document relevance."""
 
-@dataclass
-class RerankerModel:
-    name: str
-    model: CrossEncoder
+    @property
+    @abstractmethod
+    def name(self) -> str:
+        """Model identifier."""
+
+    @property
+    @abstractmethod
+    def version(self) -> str:
+        """Model or configuration version."""
+
+    @abstractmethod
+    def score(
+        self,
+        query: str,
+        document: str,
+    ) -> float:
+        """Score a single query-document pair."""
+
+    @abstractmethod
+    def score_batch(
+        self,
+        query: str,
+        documents: Sequence[str],
+    ) -> list[float]:
+        """Score documents in input order."""
