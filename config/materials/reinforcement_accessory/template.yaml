@@ -22,7 +22,6 @@ core_attributes:
 
 supplementary_attributes:
   - diameter
-  - dimensions
   - concrete_cover
   - coating
   - special_properties

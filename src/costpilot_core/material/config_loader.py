@@ -1,4 +1,5 @@
 import os
+import re
 from pathlib import Path
 from typing import Any
 
@@ -9,6 +10,8 @@ from costpilot_core.models.material.attribute_definition import AttributeDefinit
 from costpilot_core.models.material.keyword import MaterialKeyword
 from costpilot_core.models.material.keyword_level import KeywordLevel
 from costpilot_core.models.material.material_template import MaterialTemplate
+
+SUPPORTED_ATTRIBUTE_TYPES = {"single", "multiple", "grouped", "numeric"}
 
 CORE_ROOT = Path(__file__).resolve().parents[3]
 
@@ -175,26 +178,62 @@ class MaterialConfigLoader:
                     f"but {path} defines '{configured_name}'"
                 )
 
-            values = data.get("values", [])
-            if not isinstance(values, list):
-                raise TypeError(
-                    f"Invalid values in {path}: "
-                    f"expected list, got {type(values).__name__}"
+            value_type = data.get("type")
+            if value_type not in SUPPORTED_ATTRIBUTE_TYPES:
+                raise ValueError(
+                    f"Unsupported attribute type {value_type!r} in {path}"
                 )
+
+            values = data.get("values", [])
+            if not isinstance(values, list) or any(
+                not isinstance(v, str) or not v.strip() for v in values
+            ):
+                raise TypeError(f"Invalid values in {path}: expected list[str]")
 
             groups = data.get("groups", {})
             if not isinstance(groups, dict):
-                raise TypeError(
-                    f"Invalid groups in {path}: "
-                    f"expected dict, got {type(groups).__name__}"
-                )
+                raise TypeError(f"Invalid groups in {path}: expected dict")
+
+            aliases_data = data.get("aliases", {})
+            if not isinstance(aliases_data, dict):
+                raise TypeError(f"Invalid aliases in {path}: expected dict")
+            aliases: dict[str, tuple[str, ...]] = {}
+            for canonical, variants in aliases_data.items():
+                if canonical not in values:
+                    raise ValueError(
+                        f"Alias key {canonical!r} is not a canonical value in {path}"
+                    )
+                if not isinstance(variants, list) or any(
+                    not isinstance(v, str) or not v.strip() for v in variants
+                ):
+                    raise TypeError(f"Invalid aliases for {canonical!r} in {path}")
+                aliases[canonical] = tuple(variants)
+
+            patterns = data.get("patterns", [])
+            if not isinstance(patterns, list) or any(
+                not isinstance(p, str) or not p for p in patterns
+            ):
+                raise TypeError(f"Invalid patterns in {path}: expected list[str]")
+            if patterns and value_type != "numeric":
+                raise ValueError(f"patterns require type: numeric in {path}")
+            for pattern in patterns:
+                try:
+                    compiled = re.compile(pattern, flags=re.IGNORECASE)
+                except re.error as exc:
+                    raise ValueError(f"Invalid numeric regex in {path}: {exc}") from exc
+                if "value" not in compiled.groupindex:
+                    raise ValueError(
+                        f"Numeric regex must contain (?P<value>...) in {path}"
+                    )
 
             attributes[attribute_name] = AttributeDefinition(
                 name=configured_name,
-                value_type=data["type"],
+                value_type=value_type,
                 values=tuple(values),
                 unit=data.get("unit"),
                 groups=groups,
+                aliases=aliases,
+                patterns=tuple(patterns),
             )
 
         return attributes

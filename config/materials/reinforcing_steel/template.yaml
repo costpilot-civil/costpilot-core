@@ -23,7 +23,6 @@ core_attributes:
 
 supplementary_attributes:
   - surface_type
-  - weldability
   - length
   - coating
   - special_properties

@@ -11,3 +11,6 @@ values:
   - Hochfester_Beton
   - Hochleistungsbeton
   - Massenbeton
+aliases:
+  Hochfester_Beton:
+    - Hochfester Beton

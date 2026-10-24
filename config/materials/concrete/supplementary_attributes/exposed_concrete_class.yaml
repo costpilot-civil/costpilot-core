@@ -1,0 +1,8 @@
+name: exposed_concrete_class
+type: single
+
+values:
+  - SB1
+  - SB2
+  - SB3
+  - SB4

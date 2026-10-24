@@ -1,3 +1,6 @@
 name: max_aggregate_size
 type: numeric
 unit: mm
+
+patterns:
+  - '(?<!\w)(?:Größtkorn|Groesstkorn|D\s*max)\s*(?:[:=]\s*|\s+)(?P<value>\d{1,2}(?:[,.]\d+)?)\s*mm\b'

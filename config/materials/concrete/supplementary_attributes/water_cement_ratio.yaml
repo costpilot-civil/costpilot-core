@@ -1,4 +1,6 @@
 name: water_cement_ratio
 type: numeric
-
 unit: ratio
+
+patterns:
+  - '(?<!\w)(?:w\s*/\s*z|Wasser[-\s]?Zement[-\s]?(?:Wert|Verhältnis))\s*(?:[:=]\s*|\s+)(?P<value>0[,.]\d{1,3}|1(?:[,.]0+)?)\b(?!\s*[-–—]\s*\d)'

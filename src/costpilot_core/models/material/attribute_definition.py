@@ -9,3 +9,9 @@ class AttributeDefinition:
     values: tuple[Any, ...] = field(default_factory=tuple)
     unit: str | None = None
     groups: dict[str, Any] = field(default_factory=dict)
+
+    # Explicit alternative expressions for canonical values.
+    aliases: dict[str, tuple[str, ...]] = field(default_factory=dict)
+
+    # Explicit regex patterns for numeric extraction.
+    patterns: tuple[str, ...] = field(default_factory=tuple)

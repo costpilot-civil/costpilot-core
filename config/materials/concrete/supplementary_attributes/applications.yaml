@@ -1,0 +1,24 @@
+name: applications
+type: multiple
+
+values:
+  - Sauberkeitsschicht
+  - Füllbeton
+  - Verfüllbeton
+  - Unterbeton
+  - Fundamentbeton
+  - Bodenplattenbeton
+  - Bohrpfahlbeton
+  - Fahrbahnbeton
+  - Industriebodenbeton
+  - Randsteinbeton
+
+aliases:
+  Sauberkeitsschicht:
+    - Sauberkeitsschichten
+  Fundamentbeton:
+    - Beton für Fundamente
+  Bodenplattenbeton:
+    - Beton für Bodenplatten
+  Bohrpfahlbeton:
+    - Beton für Bohrpfähle
